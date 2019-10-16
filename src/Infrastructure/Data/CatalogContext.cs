@@ -19,9 +19,18 @@ namespace Microsoft.eShopWeb.Infrastructure.Data
         public DbSet<CatalogType> CatalogTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<BasketItem> BasketItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //Intentionally rolling back this change to fix issue: https://github.com/dotnet-architecture/eShopOnWeb/issues/292
+            //Will follow up after issue has been resolved.
+            //base.OnModelCreating(builder);
+            //builder.ApplyAllConfigurationsFromCurrentAssembly();
+
+            // alternately this is built-in to EF Core 2.2
+            //builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             builder.Entity<Basket>(ConfigureBasket);
             builder.Entity<CatalogBrand>(ConfigureCatalogBrand);
             builder.Entity<CatalogType>(ConfigureCatalogType);
@@ -29,10 +38,18 @@ namespace Microsoft.eShopWeb.Infrastructure.Data
             builder.Entity<Order>(ConfigureOrder);
             builder.Entity<OrderItem>(ConfigureOrderItem);
             builder.Entity<Address>(ConfigureAddress);
-            builder.Entity<CatalogItemOrdered>(ConfigurateCatalogItemOrdered);
+            builder.Entity<CatalogItemOrdered>(ConfigureCatalogItemOrdered);
+            builder.Entity<BasketItem>(ConfigureBasketItem);
         }
 
-        private void ConfigurateCatalogItemOrdered(EntityTypeBuilder<CatalogItemOrdered> builder)
+        private void ConfigureBasketItem(EntityTypeBuilder<BasketItem> builder)
+        {
+            builder.Property(bi => bi.UnitPrice)
+                .IsRequired(true)
+                .HasColumnType("decimal(18,2)");
+        }
+
+        private void ConfigureCatalogItemOrdered(EntityTypeBuilder<CatalogItemOrdered> builder)
         {
             builder.Property(cio => cio.ProductName)
                 .HasMaxLength(50)
@@ -81,7 +98,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data
                 .HasMaxLength(50);
 
             builder.Property(ci => ci.Price)
-                .IsRequired(true);
+                .IsRequired(true)
+                .HasColumnType("decimal(18,2)");
 
             builder.Property(ci => ci.PictureUri)
                 .IsRequired(false);
@@ -137,6 +155,10 @@ namespace Microsoft.eShopWeb.Infrastructure.Data
         private void ConfigureOrderItem(EntityTypeBuilder<OrderItem> builder)
         {
             builder.OwnsOne(i => i.ItemOrdered);
+
+            builder.Property(oi => oi.UnitPrice)
+                .IsRequired(true)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }
