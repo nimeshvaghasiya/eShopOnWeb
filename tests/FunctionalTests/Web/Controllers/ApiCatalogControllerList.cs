@@ -1,5 +1,4 @@
-﻿using Microsoft.eShopWeb.Web;
-using Microsoft.eShopWeb.Web.ViewModels;
+﻿using Microsoft.eShopWeb.Web.ViewModels;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
@@ -8,9 +7,10 @@ using Xunit;
 
 namespace Microsoft.eShopWeb.FunctionalTests.Web.Controllers
 {
-    public class ApiCatalogControllerList : IClassFixture<CustomWebApplicationFactory<Startup>>
+    [Collection("Sequential")]
+    public class ApiCatalogControllerList : IClassFixture<WebTestFixture>
     {
-        public ApiCatalogControllerList(CustomWebApplicationFactory<Startup> factory)
+        public ApiCatalogControllerList(WebTestFixture factory)
         {
             Client = factory.CreateClient();
         }

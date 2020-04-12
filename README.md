@@ -1,20 +1,24 @@
+![Build Status](https://github.com/dotnet-architecture/eShopOnWeb/workflows/eShopOnWeb%20Build%20and%20Test/badge.svg)
+
 # Microsoft eShopOnWeb ASP.NET Core Reference Application
 
 Sample ASP.NET Core reference application, powered by Microsoft, demonstrating a single-process (monolithic) application architecture and deployment model. If you're new to .NET development, read the [Getting Started for Beginners](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Getting-Started-for-Beginners) guide.
 
-This reference application is meant to support the free .PDF download ebook: [Architecting Modern Web Applications with ASP.NET Core and Azure](https://aka.ms/webappebook), updated to **ASP.NET Core 2.2**. [Also available in ePub/mobi formats](https://dotnet.microsoft.com/learn/web/aspnet-architecture).
+A list of Frequently Asked Questions about this repository can be found [here](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Frequently-Asked-Questions). 
+
+This reference application is meant to support the free .PDF download ebook: [Architecting Modern Web Applications with ASP.NET Core and Azure](https://aka.ms/webappebook), updated to **ASP.NET Core 3.1**. [Also available in ePub/mobi formats](https://dotnet.microsoft.com/learn/web/aspnet-architecture).
 
 You can also read the book in online pages at the .NET docs here: 
 https://docs.microsoft.com/en-us/dotnet/standard/modern-web-apps-azure-architecture/
 
-[<img src="https://user-images.githubusercontent.com/782127/52731698-5e910500-2f8c-11e9-80fa-5be7dee4888b.png" height="300" />](https://dotnet.microsoft.com/learn/web/aspnet-architecture)
+[<img src="https://user-images.githubusercontent.com/782127/74948402-48512c80-53ca-11ea-948a-58d037440888.png" height="300" />](https://dotnet.microsoft.com/learn/web/aspnet-architecture)
 
 The **eShopOnWeb** sample is related to the [eShopOnContainers](https://github.com/dotnet/eShopOnContainers) sample application which, in that case, focuses on a microservices/containers-based application architecture. However, **eShopOnWeb** is much simpler in regards to its current functionality and focuses on traditional Web Application Development with a single deployment.
 
 The goal for this sample is to demonstrate some of the principles and patterns described in the [eBook](https://aka.ms/webappebook). It is not meant to be an eCommerce reference application, and as such it does not implement many features that would be obvious and/or essential to a real eCommerce application.
 
 > ### VERSIONS
-> #### The `master` branch is currently running ASP.NET Core 2.2.
+> #### The `master` branch is currently running ASP.NET Core 3.1.
 > #### Older versions are tagged.
 
 ## Topics (eBook TOC)
@@ -56,11 +60,16 @@ You can also run the samples in Docker (see below).
 ```
 
 1. Ensure your connection strings in `appsettings.json` point to a local SQL Server instance.
+1. Ensure the tool EF was already installed. You can find some help [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet)
+```
+dotnet tool install --global dotnet-ef
+```
 
 1. Open a command prompt in the Web folder and execute the following commands:
 
 ```
 dotnet restore
+dotnet tool restore
 dotnet ef database update -c catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
 dotnet ef database update -c appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
 ```
@@ -92,3 +101,8 @@ You can run the Web sample by running these commands from the root folder (where
 You should be able to make requests to localhost:5106 once these commands complete.
 
 You can also run the Web application by using the instructions located in its `Dockerfile` file in the root of the project. Again, run these commands from the root of the solution (where the .sln file is located).
+
+## Community Extensions
+We have some great contributions from the community, and while these aren't maintained by Microsoft we still want to highlight them.
+
+[eShopOnWeb VB.NET](https://github.com/VBAndCs/eShopOnWeb_VB.NET) by Mohammad Hamdy Ghanem

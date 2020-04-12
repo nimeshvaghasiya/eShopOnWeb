@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure.Data;
@@ -10,13 +9,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Microsoft.eShopWeb.FunctionalTests.Web.Controllers
+namespace Microsoft.eShopWeb.FunctionalTests.Web
 {
-    public class CustomWebApplicationFactory<TStartup>
-    : WebApplicationFactory<Startup>
+    public class WebTestFixture : WebApplicationFactory<Startup>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.UseEnvironment("Testing");
+
             builder.ConfigureServices(services =>
             {
                  services.AddEntityFrameworkInMemoryDatabase();
@@ -40,11 +40,6 @@ namespace Microsoft.eShopWeb.FunctionalTests.Web.Controllers
                     options.UseInternalServiceProvider(provider);
                 });
 
-                services.AddIdentity<ApplicationUser, IdentityRole>()
-                        .AddDefaultUI(UIFramework.Bootstrap4)
-                        .AddEntityFrameworkStores<AppIdentityDbContext>()
-                        .AddDefaultTokenProviders();
-
                 // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
@@ -57,7 +52,7 @@ namespace Microsoft.eShopWeb.FunctionalTests.Web.Controllers
                     var loggerFactory = scopedServices.GetRequiredService<ILoggerFactory>();
 
                     var logger = scopedServices
-                        .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                        .GetRequiredService<ILogger<WebTestFixture>>();
 
                     // Ensure the database is created.
                     db.Database.EnsureCreated();
@@ -69,8 +64,8 @@ namespace Microsoft.eShopWeb.FunctionalTests.Web.Controllers
 
                         // seed sample user data
                         var userManager = scopedServices.GetRequiredService<UserManager<ApplicationUser>>();
-
-                        AppIdentityDbContextSeed.SeedAsync(userManager).Wait();
+                        var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
+                        AppIdentityDbContextSeed.SeedAsync(userManager, roleManager).Wait();
                     }
                     catch (Exception ex)
                     {
